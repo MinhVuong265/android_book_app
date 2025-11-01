@@ -1,98 +1,111 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '../../domain/entities/user.dart';
 
 class UserRemoteDataSource {
-	final FirebaseFirestore firestore;
-	UserRemoteDataSource({required this.firestore});
+  final FirebaseFirestore firestore;
+  UserRemoteDataSource({required this.firestore});
 
-	Future<List<UserEntity>> fetchUsers() async {
-		final querySnapshot = await firestore.collection('users').get();
-		return querySnapshot.docs.map((doc) {
-			final data = doc.data();
-			final id = doc.id;
-			final name = (data['name'] ?? '') as String;
-			final email = (data['email'] ?? '') as String;
-			DateTime? createdAt;
-			final rawCreated = data['createdAt'];
-			if (rawCreated is Timestamp) {
-				createdAt = rawCreated.toDate();
-			} else if (rawCreated is String) {
-				try {
-					createdAt = DateTime.parse(rawCreated);
-				} catch (_) {}
-			}
-			return UserEntity(id: id, name: name, email: email, createdAt: createdAt);
-		}).toList();
-	}
+  /// Lấy toàn bộ người dùng
+  Future<List<UserEntity>> fetchUsers() async {
+    final querySnapshot = await firestore.collection('users').get();
+    return querySnapshot.docs.map((doc) {
+      final data = doc.data();
+      final id = doc.id;
 
-		/// Fetch single user by id
-		Future<UserEntity?> fetchUserById(String id) async {
-			final doc = await firestore.collection('users').doc(id).get();
-			if (!doc.exists) return null;
-			final data = doc.data() ?? {};
-			final name = (data['name'] ?? '') as String;
-			final email = (data['email'] ?? '') as String;
-			DateTime? createdAt;
-			final rawCreated = data['createdAt'];
-			if (rawCreated is Timestamp) {
-				createdAt = rawCreated.toDate();
-			} else if (rawCreated is String) {
-				try {
-					createdAt = DateTime.parse(rawCreated);
-				} catch (_) {}
-			}
-			return UserEntity(id: doc.id, name: name, email: email, createdAt: createdAt);
-		}
+      final name = (data['name'] ?? '') as String;
+      final email = (data['email'] ?? '') as String;
 
-		/// Search users by query (name or email). Implementation fetches all and filters locally.
-		Future<List<UserEntity>> searchUsers(String query) async {
-			final q = query.trim().toLowerCase();
-			if (q.isEmpty) return await fetchUsers();
-			final all = await fetchUsers();
-			return all.where((u) {
-				final name = u.name.toLowerCase();
-				final email = u.email.toLowerCase();
-				return name.contains(q) || email.contains(q);
-			}).toList();
-		}
+      final phoneNumber = data['phoneNumber'] as String?;
+      final address = data['address'] as String?;
+      final gender = data['gender'] as String?;
 
-	Future<UserEntity> createUser(UserEntity user) async {
-		final data = {
-			'name': user.name,
-			'email': user.email,
-			'createdAt': user.createdAt != null ? Timestamp.fromDate(user.createdAt!) : FieldValue.serverTimestamp(),
-		};
-		final docRef = await firestore.collection('users').add(data);
-		final newDoc = await docRef.get();
-		final createdData = newDoc.data() ?? {};
-		final id = newDoc.id;
-		final name = (createdData['name'] ?? '') as String;
-		final email = (createdData['email'] ?? '') as String;
-		DateTime? createdAt;
-		final rawCreated = createdData['createdAt'];
-		if (rawCreated is Timestamp) {
-			createdAt = rawCreated.toDate();
-		} else if (rawCreated is String) {
-			try {
-				createdAt = DateTime.parse(rawCreated);
-			} catch (_) {}
-		}
-		return UserEntity(id: id, name: name, email: email, createdAt: createdAt);
-	}
+      DateTime? birthDate;
+      final rawBirth = data['birthDate'];
+      if (rawBirth is Timestamp) {
+        birthDate = rawBirth.toDate();
+      } else if (rawBirth is String) {
+        try {
+          birthDate = DateTime.parse(rawBirth);
+        } catch (_) {}
+      }
 
-	Future<UserEntity> updateUser(UserEntity user) async {
-		final Map<String, Object?> data = {
-			'name': user.name,
-			'email': user.email,
-			if (user.createdAt != null) 'createdAt': Timestamp.fromDate(user.createdAt!),
-		};
-		await firestore.collection('users').doc(user.id).update(data);
-		return user;
-	}
+      DateTime? createdAt;
+      final rawCreated = data['createdAt'];
+      if (rawCreated is Timestamp) {
+        createdAt = rawCreated.toDate();
+      } else if (rawCreated is String) {
+        try {
+          createdAt = DateTime.parse(rawCreated);
+        } catch (_) {}
+      }
 
-	Future<void> deleteUser(String id) async {
-		await firestore.collection('users').doc(id).delete();
-	}
+      return UserEntity(
+        id: id,
+        name: name,
+        email: email,
+        phoneNumber: phoneNumber,
+        address: address,
+        gender: gender,
+        birthDate: birthDate,
+        createdAt: createdAt,
+      );
+    }).toList();
+  }
+
+  /// Lấy thông tin 1 người dùng theo id
+  Future<UserEntity?> fetchUserById(String id) async {
+    final doc = await firestore.collection('users').doc(id).get();
+    if (!doc.exists) return null;
+
+    final data = doc.data() ?? {};
+    final name = (data['name'] ?? '') as String;
+    final email = (data['email'] ?? '') as String;
+
+    final phoneNumber = data['phoneNumber'] as String?;
+    final address = data['address'] as String?;
+    final gender = data['gender'] as String?;
+
+    DateTime? birthDate;
+    final rawBirth = data['birthDate'];
+    if (rawBirth is Timestamp) {
+      birthDate = rawBirth.toDate();
+    } else if (rawBirth is String) {
+      try {
+        birthDate = DateTime.parse(rawBirth);
+      } catch (_) {}
+    }
+
+    DateTime? createdAt;
+    final rawCreated = data['createdAt'];
+    if (rawCreated is Timestamp) {
+      createdAt = rawCreated.toDate();
+    } else if (rawCreated is String) {
+      try {
+        createdAt = DateTime.parse(rawCreated);
+      } catch (_) {}
+    }
+
+    return UserEntity(
+      id: doc.id,
+      name: name,
+      email: email,
+      phoneNumber: phoneNumber,
+      address: address,
+      gender: gender,
+      birthDate: birthDate,
+      createdAt: createdAt,
+    );
+  }
+
+  /// Tìm kiếm theo tên hoặc email
+  Future<List<UserEntity>> searchUsers(String query) async {
+    final q = query.trim().toLowerCase();
+    if (q.isEmpty) return await fetchUsers();
+    final all = await fetchUsers();
+    return all.where((u) {
+      final name = u.name.toLowerCase();
+      final email = u.email.toLowerCase();
+      return name.contains(q) || email.contains(q);
+    }).toList();
+  }
 }
-
