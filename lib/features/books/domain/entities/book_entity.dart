@@ -4,6 +4,7 @@ class BookEntity {
   final String author;
   final String? description;
   final String coverImageUrl;
+  final String content;
   final String? publisher;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -14,6 +15,7 @@ class BookEntity {
     required this.author,
     this.description,
     required this.coverImageUrl,
+    required this.content,
     this.publisher,
     required this.createdAt,
     required this.updatedAt,
@@ -26,6 +28,7 @@ class BookEntity {
       'author': author,
       'description': description,
       'coverImageUrl': coverImageUrl,
+      'content': content,
       'publisher': publisher,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
@@ -39,6 +42,7 @@ class BookEntity {
       author: map['author'] ?? 'Đang cập nhật',
       description: map['description'] ?? 'Chưa có mô tả',
       coverImageUrl: map['coverImageUrl'] ?? 'https://example.com/default-cover.jpg',
+      content: map['content'] ?? 'Đang cập nhật',
       publisher: map['publisher'] ?? 'Đang cập nhật',
       createdAt: DateTime.parse(map['createdAt']),
       updatedAt: DateTime.parse(map['updatedAt']),

@@ -27,10 +27,12 @@ class FirebaseBookDatasource {
   }
 
   Future<BookModel> addBook(BookModel book) async {
-    await _firestore
+    final docRef = await _firestore
         .collection(_collectionPath)
-        .doc(book.id)
-        .set(book.toMap());
+        .add(book.toMap()); // Firestore tự tạo ID tại đây
+
+    // Cập nhật lại ID đó vào Firestore (để sau này truy vấn dễ)
+    await docRef.update({'id': docRef.id});
     return book;
   }
 
