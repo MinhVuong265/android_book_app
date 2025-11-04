@@ -1,38 +1,39 @@
 import 'package:book_app/features/books/presentation/pages/add_edit_book_page.dart';
 import 'package:book_app/features/home/presentation/pages/home_page.dart';
-import 'package:flutter/material.dart';
+//import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:book_app/features/auth/presentation/pages/login_page.dart';
-import 'package:book_app/features/auth/presentation/pages/signup_page.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:book_app/features/auth/presentation/pages/login_page.dart';
+// import 'package:book_app/features/auth/presentation/pages/signup_page.dart';
 import 'package:book_app/features/books/presentation/pages/book_reader_page.dart';
 import 'package:book_app/features/books/domain/entities/book_entity.dart';
 import 'app_routes.dart';
+import 'package:book_app/features/categories/presentation/pages/category_list_page.dart';
 
 class AppGoRouter {
   static final router = GoRouter(
-    initialLocation: AppRoutes.login,
-    redirect: (context, state) {
-      final user = FirebaseAuth.instance.currentUser;
-      final loggingIn = state.matchedLocation == AppRoutes.login;
+    initialLocation: AppRoutes.categories,
+    // redirect: (context, state) {
+    //   final user = FirebaseAuth.instance.currentUser;
+    //   final loggingIn = state.matchedLocation == AppRoutes.login;
 
-      // 🔒 Chưa đăng nhập → luôn về login
-      if (user == null && !loggingIn) return AppRoutes.login;
+    //   // 🔒 Chưa đăng nhập → luôn về login
+    //   if (user == null && !loggingIn) return AppRoutes.login;
 
-      // 🔓 Đã đăng nhập mà vẫn ở login → chuyển về home
-      if (user != null && loggingIn) return AppRoutes.home;
+    //   // 🔓 Đã đăng nhập mà vẫn ở login → chuyển về home
+    //   if (user != null && loggingIn) return AppRoutes.home;
 
-      return null;
-    },
+    //   return null;
+    // },
     routes: [
-      GoRoute(
-        path: AppRoutes.login,
-        builder: (context, state) => const LoginPage(),
-      ),
-      GoRoute(
-        path: AppRoutes.signup,
-        builder: (context, state) => const SignupPage(),
-      ),
+      // GoRoute(
+      //   path: AppRoutes.login,
+      //   builder: (context, state) => const LoginPage(),
+      // ),
+      // GoRoute(
+      //   path: AppRoutes.signup,
+      //   builder: (context, state) => const SignupPage(),
+      // ),
       GoRoute(
         path: AppRoutes.home,
         builder: (context, state) => const HomePage(),
@@ -47,6 +48,9 @@ class AppGoRouter {
       GoRoute(path: AppRoutes.addEditBook, builder: (context, state) {
         final book = state.extra as BookEntity?;
         return AddEditBookPage(book: book);
+      }),
+       GoRoute(path: AppRoutes.categories, builder: (context, state) {
+        return const CategoriesScreen();
       }),
     ],
   );
