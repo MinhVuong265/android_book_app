@@ -16,18 +16,10 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController _searchController = TextEditingController();
   String _selectedCategory = "Tất cả";
 
-  final List<String> _categories = [
-    "Tất cả",
-    "Tiểu thuyết",
-    "Kinh doanh",
-    "Tâm lý",
-    "Khoa học",
-    "Lịch sử",
-  ];
-
   @override
   Widget build(BuildContext context) {
     final booksRef = FirebaseFirestore.instance.collection('books');
+    final categoriesRef = FirebaseFirestore.instance.collection('categories');
 
     return Scaffold(
       appBar: AppBar(
@@ -40,11 +32,12 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: [
-          // 🔍 Thanh tìm kiếm + Dropdown
+          // 🔍 Thanh tìm kiếm + Dropdown danh mục từ Firestore
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             child: Row(
               children: [
+                // Ô tìm kiếm
                 Expanded(
                   child: TextField(
                     controller: _searchController,
@@ -62,24 +55,45 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 const SizedBox(width: 10),
-                DropdownButton<String>(
-                  value: _selectedCategory,
-                  items: _categories
-                      .map(
-                        (cat) => DropdownMenuItem(value: cat, child: Text(cat)),
-                      )
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedCategory = value!;
-                    });
+
+                // 🔽 Dropdown danh mục (lấy từ Firestore)
+                StreamBuilder<QuerySnapshot>(
+                  stream: categoriesRef.snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    }
+
+                    if (snapshot.hasError) {
+                      return const Text("Lỗi tải danh mục");
+                    }
+
+                    final docs = snapshot.data?.docs ?? [];
+                    final categories = ["Tất cả", ...docs.map((d) => d["name"].toString())];
+
+                    // Đảm bảo _selectedCategory hợp lệ
+                    if (!categories.contains(_selectedCategory)) {
+                      _selectedCategory = "Tất cả";
+                    }
+
+                    return DropdownButton<String>(
+                      value: _selectedCategory,
+                      items: categories
+                          .map((cat) => DropdownMenuItem(value: cat, child: Text(cat)))
+                          .toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedCategory = value!;
+                        });
+                      },
+                    );
                   },
                 ),
               ],
             ),
           ),
 
-          // 🔁 Dữ liệu sách
+          // 📚 Danh sách sách
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: booksRef.snapshots(),
@@ -94,23 +108,16 @@ class _HomePageState extends State<HomePage> {
 
                 final books = snapshot.data?.docs ?? [];
 
-                // ✅ Lọc dữ liệu theo từ khóa & danh mục
+                // ✅ Lọc theo từ khóa và danh mục
                 final filteredBooks = books.where((doc) {
                   final data = doc.data() as Map<String, dynamic>;
                   final title = (data["title"] ?? "").toString().toLowerCase();
-                  final author = (data["author"] ?? "")
-                      .toString()
-                      .toLowerCase();
-                  final category = (data["category"] ?? "Khác")
-                      .toString()
-                      .toLowerCase();
+                  final author = (data["author"] ?? "").toString().toLowerCase();
+                  final category = (data["category"] ?? "").toString().toLowerCase();
 
                   final query = _searchController.text.toLowerCase();
-                  final matchQuery =
-                      title.contains(query) || author.contains(query);
-
-                  final matchCategory =
-                      _selectedCategory == "Tất cả" ||
+                  final matchQuery = title.contains(query) || author.contains(query);
+                  final matchCategory = _selectedCategory == "Tất cả" ||
                       category == _selectedCategory.toLowerCase();
 
                   return matchQuery && matchCategory;
@@ -126,21 +133,18 @@ class _HomePageState extends State<HomePage> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: filteredBooks.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 0.63,
-                          mainAxisSpacing: 16,
-                          crossAxisSpacing: 16,
-                        ),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.63,
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                    ),
                     itemBuilder: (context, index) {
-                      final data =
-                          filteredBooks[index].data() as Map<String, dynamic>;
-                      final title = data["title"] ?? "No title";
-                      final author = data["author"] ?? "Unknown";
+                      final data = filteredBooks[index].data() as Map<String, dynamic>;
+                      final title = data["title"] ?? "Không có tiêu đề";
+                      final author = data["author"] ?? "Không rõ";
                       final rating = data["rating"] ?? 0.0;
-                      final image =
-                          data["coverImageUrl"] ?? "images/image1.jpg";
+                      final image = "images/image1.jpg";
 
                       return GestureDetector(
                         onTap: () {
@@ -148,15 +152,12 @@ class _HomePageState extends State<HomePage> {
                             context: context,
                             isScrollControlled: true,
                             shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(20),
-                              ),
+                              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                             ),
                             builder: (context) {
                               return BookDetailSheet(
                                 bookData: data,
-                                isAdmin:
-                                    true, // Thay bằng biến phân quyền nếu có
+                                isAdmin: true, // Thay bằng kiểm tra quyền thực tế nếu cần
                               );
                             },
                           );
@@ -166,28 +167,19 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(10),
-                              child: //image.startsWith('http')
-                                  // ? Image.network(
-                                  //     image,
-                                  //     height: 200,
-                                  //     width: double.infinity,
-                                  //     fit: BoxFit.cover,
-                                  //   )
-                                  Image.asset(
-                                    'images/image1.jpg',
-                                    height: 300,
-                                    width: 200,
-                                    fit: BoxFit.cover,
-                                  ),
+                              child: Image.asset(
+                                image,
+                                height: 300,
+                                width: 200,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                             const SizedBox(height: 8),
                             Text(
                               title,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: const TextStyle(fontWeight: FontWeight.bold),
                             ),
                             Text(
                               author,
@@ -196,11 +188,7 @@ class _HomePageState extends State<HomePage> {
                             Row(
                               children: [
                                 Text("$rating"),
-                                const Icon(
-                                  Icons.star,
-                                  color: Colors.amber,
-                                  size: 16,
-                                ),
+                                const Icon(Icons.star, color: Colors.amber, size: 16),
                               ],
                             ),
                           ],
@@ -214,34 +202,13 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
+
+      // ➕ Nút thêm sách
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.brown,
-        onPressed: () {
-          context.push(AppRoutes.addEditBook);
-        },
+        onPressed: () => context.push(AppRoutes.addEditBook),
         child: const Icon(Icons.add, color: Colors.white),
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   currentIndex: 1,
-      //   onTap: (index) {
-      //     if (index == 0) context.go('/collection');
-      //     if (index == 1) context.go('/explore');
-      //     if (index == 2) context.go('/profile');
-      //     if (index == 3) context.go('/categories');
-      //     if (index == 4) context.go('/users');
-      //   },
-      //   items: const [
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.book),
-      //       label: 'My Collection',
-      //     ),
-      //     BottomNavigationBarItem(icon: Icon(Icons.add_box), label: 'Explore'),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.person),
-      //       label: 'My Profile',
-      //     ),
-      //   ],
-      // ),
       bottomNavigationBar: const CommonBottomNav(currentIndex: 1),
     );
   }

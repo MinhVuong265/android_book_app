@@ -1,4 +1,6 @@
+import 'package:book_app/features/books/presentation/pages/book_detail_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../data/repositories/book_repository_impl.dart';
 import '../../data/datasources/firebase_book_datasource.dart';
 import '../../domain/entities/book_entity.dart';
@@ -19,6 +21,9 @@ class _AddEditBookPageState extends State<AddEditBookPage> {
   final _descriptionController = TextEditingController();
 
   final _repo = BookRepositoryImpl(FirebaseBookDatasource());
+  final _categoriesRef = FirebaseFirestore.instance.collection('categories');
+
+  String? _selectedCategory; // Lưu danh mục được chọn
 
   @override
   void initState() {
@@ -27,18 +32,31 @@ class _AddEditBookPageState extends State<AddEditBookPage> {
       _titleController.text = widget.book!.title;
       _authorController.text = widget.book!.author;
       _contentController.text = widget.book!.content;
-      _imageController.text = widget.book!.coverImageUrl;
+      _imageController.text = 'images/image1.jpg';
       _descriptionController.text = widget.book!.description ?? '';
+      _selectedCategory = widget.book!.category;
     }
   }
 
   Future<void> _saveBook() async {
+    if (_titleController.text.trim().isEmpty ||
+        _authorController.text.trim().isEmpty ||
+        _selectedCategory == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Vui lòng nhập đầy đủ thông tin")),
+      );
+    
+      return;
+    }
+
     final newBook = BookEntity(
       id: widget.book?.id ?? '',
       title: _titleController.text.trim(),
       author: _authorController.text.trim(),
+      description: _descriptionController.text.trim(),
       content: _contentController.text.trim(),
       coverImageUrl: _imageController.text.trim(),
+      category: _selectedCategory!,
       createdAt: widget.book?.createdAt ?? DateTime.now(),
       updatedAt: DateTime.now(),
     );
@@ -51,6 +69,21 @@ class _AddEditBookPageState extends State<AddEditBookPage> {
 
     if (mounted) {
       Navigator.pop(context, true); // trở lại home sau khi lưu
+      showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (ctx) => BookDetailSheet(
+        bookData: {
+          'id': newBook.id,
+          'title': newBook.title,
+          'author': newBook.author,
+          'content': newBook.content,
+          'coverImageUrl': newBook.coverImageUrl,
+          'category': newBook.category,
+        },
+        isAdmin: true,
+        )
+      );
     }
   }
 
@@ -61,6 +94,8 @@ class _AddEditBookPageState extends State<AddEditBookPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(isEdit ? 'Sửa sách' : 'Thêm sách'),
+        backgroundColor: Colors.brown,
+        foregroundColor: Colors.white,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -86,8 +121,52 @@ class _AddEditBookPageState extends State<AddEditBookPage> {
               minLines: 5,
               maxLines: 10,
             ),
+            // TextField(
+            //   controller: _imageController,
+            //   decoration: const InputDecoration(labelText: 'Link ảnh bìa (URL)'),
+            // ),
+            const SizedBox(height: 16),
+
+            // 🔽 Dropdown danh mục
+            StreamBuilder<QuerySnapshot>(
+              stream: _categoriesRef.snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (snapshot.hasError) {
+                  return const Text("Không thể tải danh mục");
+                }
+
+                final docs = snapshot.data?.docs ?? [];
+                final categories = docs.map((d) => d['name'].toString()).toList();
+
+                if (categories.isEmpty) {
+                  return const Text("Chưa có danh mục nào trong Firestore");
+                }
+
+                return DropdownButtonFormField<String>(
+                  value: _selectedCategory ?? categories[0],
+                  items: categories
+                      .map((cat) =>
+                          DropdownMenuItem(value: cat, child: Text(cat)))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() => _selectedCategory = value);
+                  },
+                  decoration: const InputDecoration(labelText: 'Danh mục'),
+                );
+              },
+            ),
+
             const SizedBox(height: 20),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.brown,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+              ),
               onPressed: _saveBook,
               child: Text(isEdit ? 'Cập nhật' : 'Thêm mới'),
             ),

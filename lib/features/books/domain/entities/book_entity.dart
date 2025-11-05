@@ -2,6 +2,7 @@ class BookEntity {
   final String id;
   final String title;
   final String author;
+  final String category;
   final String? description;
   final String coverImageUrl;
   final String content;
@@ -13,6 +14,7 @@ class BookEntity {
     required this.id,
     required this.title,
     required this.author,
+    required this.category,
     this.description,
     required this.coverImageUrl,
     required this.content,
@@ -26,6 +28,7 @@ class BookEntity {
       'id': id,
       'title': title,
       'author': author,
+      'category': category,
       'description': description,
       'coverImageUrl': coverImageUrl,
       'content': content,
@@ -40,6 +43,7 @@ class BookEntity {
       id: map['id'],
       title: map['title'],
       author: map['author'] ?? 'Đang cập nhật',
+      category: map['category'] ?? 'Chưa phân loại',
       description: map['description'] ?? 'Chưa có mô tả',
       coverImageUrl: map['coverImageUrl'] ?? 'https://example.com/default-cover.jpg',
       content: map['content'] ?? 'Đang cập nhật',
