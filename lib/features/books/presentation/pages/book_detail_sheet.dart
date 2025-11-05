@@ -21,6 +21,7 @@ class BookDetailSheet extends StatelessWidget {
     final author = bookData['author'] ?? 'Không rõ tác giả';
     final image = bookData['coverImageUrl'] ?? 'assets/images/book_image1.jpg';
     final content = bookData['content'] ?? 'Chưa có nội dung';
+    final category = bookData['category'] ?? 'Chưa phân loại';
 
     return DraggableScrollableSheet(
       expand: false,
@@ -39,15 +40,12 @@ class BookDetailSheet extends StatelessWidget {
                 Center(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15),
-                    // child: image.startsWith('http')
-                    //     // ? Image.network(image, height: 200)
-                    //     : Image.asset(image, height: 200),
                     child: Image.asset('images/image1.jpg', height: 200),
                   ),
                 ),
                 const SizedBox(height: 16),
 
-                // Tiêu đề & tác giả
+                // Tiêu đề
                 Text(
                   title,
                   style: const TextStyle(
@@ -57,14 +55,23 @@ class BookDetailSheet extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
+
+                // Tác giả
                 Text(
                   'Tác giả: $author',
                   style: const TextStyle(color: Colors.grey),
                 ),
 
+                // Thể loại
+                const SizedBox(height: 4),
+                Text(
+                  'Thể loại: $category',
+                  style: const TextStyle(color: Colors.grey),
+                ),
+
                 const Divider(height: 30),
 
-                // Nội dung ngắn
+                // Nội dung mô tả/ngắn
                 Text(
                   content.length > 200
                       ? '${content.substring(0, 200)}...'
@@ -74,7 +81,7 @@ class BookDetailSheet extends StatelessWidget {
 
                 const SizedBox(height: 25),
 
-                // Các nút chức năng
+                // Nút chức năng
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -98,6 +105,7 @@ class BookDetailSheet extends StatelessWidget {
                             author: author,
                             content: content,
                             coverImageUrl: image,
+                            category: category,
                             createdAt: DateTime.now(),
                             updatedAt: DateTime.now(),
                           ),
@@ -107,7 +115,7 @@ class BookDetailSheet extends StatelessWidget {
                       label: const Text('Đọc sách'),
                     ),
 
-                    // Nếu là admin → hiện nút Sửa và Xoá
+                    // Nếu là admin thì hiện nút sửa & xoá
                     if (true) ...[
                       ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
@@ -128,6 +136,7 @@ class BookDetailSheet extends StatelessWidget {
                               author: author,
                               content: content,
                               coverImageUrl: image,
+                              category: category,
                               createdAt: DateTime.now(),
                               updatedAt: DateTime.now(),
                             ),
