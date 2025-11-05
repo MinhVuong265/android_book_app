@@ -8,10 +8,10 @@ import 'package:book_app/features/auth/presentation/pages/signup_page.dart';
 import 'package:book_app/features/books/presentation/pages/book_reader_page.dart';
 import 'package:book_app/features/books/domain/entities/book_entity.dart';
 import 'app_routes.dart';
-import 'package:book_app/features/profile/presentation/pages/my_profile_page.dart';
-import 'package:book_app/features/profile/presentation/pages/edit_profile_page.dart';
 import 'package:book_app/features/library/presentation/pages/favorite_books_page.dart';
 import 'package:book_app/features/library/presentation/pages/reading_history_page.dart';
+import 'package:book_app/features/profile/presentation/pages/my_profile_page.dart';
+import 'package:book_app/features/profile/presentation/pages/edit_profile_page.dart';
 import 'package:book_app/features/library/presentation/pages/my_collection_page.dart';
 
 class AppGoRouter {
@@ -83,6 +83,13 @@ class AppGoRouter {
           return MyCollectionPage(
             userName: user?.displayName ?? user?.email ?? 'User',
           );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.addEditBook,
+        builder: (context, state) {
+          final book = state.extra as BookEntity?;
+          return AddEditBookPage(book: book);
         },
       ),
     ],
