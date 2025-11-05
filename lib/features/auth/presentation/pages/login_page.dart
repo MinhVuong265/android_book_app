@@ -2,10 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-<<<<<<< Updated upstream
-=======
 import '/core/routing/app_routes.dart';
->>>>>>> Stashed changes
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,62 +11,32 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-<<<<<<< Updated upstream
-  final emailCtrl = TextEditingController();
-  final passCtrl = TextEditingController();
-  String? error;
-=======
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   String? error;
   bool _obscurePassword = true;
->>>>>>> Stashed changes
 
   Future<void> _login() async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-<<<<<<< Updated upstream
-        email: emailCtrl.text.trim(),
-        password: passCtrl.text,
-      );
-    } on FirebaseAuthException catch (e) {
-      setState(() => error = e.message);
-=======
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
     } on FirebaseAuthException catch (e) {
-       ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("Đăng nhập thất bại! Vui lòng kiểm tra lại email và mật khẩu.\n${e.message}"),
-        backgroundColor: Colors.redAccent,
-      ),
-    );
->>>>>>> Stashed changes
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "Đăng nhập thất bại! Vui lòng kiểm tra lại email và mật khẩu.\n${e.message}",
+          ),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-<<<<<<< Updated upstream
-      appBar: AppBar(title: const Text("Login")),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            if (error != null)
-              Text(error!, style: const TextStyle(color: Colors.red)),
-            TextField(controller: emailCtrl, decoration: const InputDecoration(labelText: "Email")),
-            TextField(controller: passCtrl, decoration: const InputDecoration(labelText: "Password"), obscureText: true),
-            const SizedBox(height: 16),
-            ElevatedButton(onPressed: _login, child: const Text("Login")),
-            TextButton(
-              onPressed: () => context.go(AppRoutes.signup),
-              child: const Text("No account? Register"),
-            )
-          ],
-=======
       backgroundColor: const Color(0xFFF5F5F5),
       body: Center(
         child: Container(
@@ -86,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ],
           ),
-          
+
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -116,13 +83,19 @@ class _LoginPageState extends State<LoginPage> {
                 decoration: InputDecoration(
                   hintText: "Nhập email",
                   hintStyle: TextStyle(color: Colors.grey.withOpacity(0.7)),
-                  prefixIcon: const Icon(Icons.email_outlined, color: Colors.pinkAccent),
+                  prefixIcon: const Icon(
+                    Icons.email_outlined,
+                    color: Colors.pinkAccent,
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   filled: true,
                   fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 14,
+                    horizontal: 12,
+                  ),
                 ),
               ),
 
@@ -146,10 +119,15 @@ class _LoginPageState extends State<LoginPage> {
                 decoration: InputDecoration(
                   hintText: "Nhập mật khẩu",
                   hintStyle: TextStyle(color: Colors.grey.withOpacity(0.7)),
-                  prefixIcon: const Icon(Icons.lock_outline, color: Colors.pinkAccent),
+                  prefixIcon: const Icon(
+                    Icons.lock_outline,
+                    color: Colors.pinkAccent,
+                  ),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                      _obscurePassword
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
                       color: Colors.pinkAccent,
                     ),
                     onPressed: () {
@@ -163,7 +141,10 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   filled: true,
                   fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 14,
+                    horizontal: 12,
+                  ),
                 ),
               ),
 
@@ -200,8 +181,7 @@ class _LoginPageState extends State<LoginPage> {
                   const Text("Chưa có tài khoản? "),
                   MouseRegion(
                     cursor: SystemMouseCursors.click,
-                    child:
-                      GestureDetector(
+                    child: GestureDetector(
                       onTap: () {
                         context.go(AppRoutes.signup);
                       },
@@ -213,18 +193,13 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ],
           ),
->>>>>>> Stashed changes
         ),
       ),
     );
   }
-<<<<<<< Updated upstream
 }
-=======
-}
->>>>>>> Stashed changes

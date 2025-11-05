@@ -26,8 +26,4 @@ class CategoryRepositoryImpl implements CategoryRepository {
   Future<void> deleteCategory(String id) {
     return remoteDataSource.deleteCategory(id);
   }
-<<<<<<< Updated upstream
 }
-=======
-}
->>>>>>> Stashed changes

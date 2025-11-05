@@ -1,7 +1,4 @@
-<<<<<<< Updated upstream
-=======
 import 'package:book_app/widgets/bottom_nav.dart';
->>>>>>> Stashed changes
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/category.dart';
@@ -22,13 +19,10 @@ class CategoriesScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-<<<<<<< Updated upstream
-=======
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
        ),
->>>>>>> Stashed changes
         title: const Text(
           'Quản lý danh mục',
           style: TextStyle(
@@ -183,10 +177,7 @@ class CategoriesScreen extends ConsumerWidget {
               style: const TextStyle(color: Colors.redAccent)),
         ),
       ),
-<<<<<<< Updated upstream
-=======
       bottomNavigationBar: const CommonBottomNav(currentIndex: 3),
->>>>>>> Stashed changes
     );
   }
 
@@ -519,8 +510,4 @@ class CategoriesScreen extends ConsumerWidget {
       ),
     );
   }
-<<<<<<< Updated upstream
 }
-=======
-}
->>>>>>> Stashed changes

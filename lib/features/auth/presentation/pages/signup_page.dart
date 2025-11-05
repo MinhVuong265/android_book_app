@@ -1,12 +1,7 @@
-<<<<<<< Updated upstream
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-=======
 import 'package:book_app/core/routing/app_routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
->>>>>>> Stashed changes
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -15,21 +10,6 @@ class SignupPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<SignupPage> {
-<<<<<<< Updated upstream
-  final emailCtrl = TextEditingController();
-  final passCtrl = TextEditingController();
-  String? error;
-
-  Future<void> _register() async {
-    try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailCtrl.text.trim(),
-        password: passCtrl.text,
-      );
-    } on FirebaseAuthException catch (e) {
-      setState(() => error = e.message);
-    }
-=======
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -59,26 +39,11 @@ class _RegisterPageState extends State<SignupPage> {
       }
     }
     
->>>>>>> Stashed changes
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-<<<<<<< Updated upstream
-      appBar: AppBar(title: const Text("Register")),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            if (error != null)
-              Text(error!, style: const TextStyle(color: Colors.red)),
-            TextField(controller: emailCtrl, decoration: const InputDecoration(labelText: "Email")),
-            TextField(controller: passCtrl, decoration: const InputDecoration(labelText: "Password"), obscureText: true),
-            const SizedBox(height: 16),
-            ElevatedButton(onPressed: _register, child: const Text("Create Account")),
-          ],
-=======
       backgroundColor: const Color(0xFFF5F5F5),
       body: Center(
         child: Container(
@@ -264,13 +229,8 @@ class _RegisterPageState extends State<SignupPage> {
               ),
             ],
           ),
->>>>>>> Stashed changes
         ),
       ),
     );
   }
-<<<<<<< Updated upstream
 }
-=======
-}
->>>>>>> Stashed changes
