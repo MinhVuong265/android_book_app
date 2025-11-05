@@ -1,3 +1,4 @@
+import 'package:book_app/widgets/bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../data/models/account_model.dart';
@@ -139,6 +140,7 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                 );
               },
             ),
+            bottomNavigationBar: CommonBottomNav(currentIndex: 5),
     );
   }
 }

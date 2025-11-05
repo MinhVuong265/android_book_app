@@ -209,7 +209,6 @@ class _HomePageState extends State<HomePage> {
         onPressed: () => context.push(AppRoutes.addEditBook),
         child: const Icon(Icons.add, color: Colors.white),
       ),
-
       bottomNavigationBar: const CommonBottomNav(currentIndex: 1),
     );
   }

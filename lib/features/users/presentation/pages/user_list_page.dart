@@ -1,8 +1,6 @@
-import 'package:book_app/core/routing/app_routes.dart';
 import 'package:book_app/widgets/bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../../domain/entities/user.dart';
 import '../../../../core/providers.dart';
 

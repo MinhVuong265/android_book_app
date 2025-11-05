@@ -13,4 +13,5 @@ class AppRoutes {
   static const users = '/users';
   // Collection
   static const collection = '/collection';
+  static const accounts = '/accounts';
 }
