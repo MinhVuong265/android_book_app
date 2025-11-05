@@ -1,6 +1,11 @@
+<<<<<<< Updated upstream
 //import 'package:book_app/features/categories/presentation/pages/category_list_page.dart';
 import 'package:book_app/features/users/presentation/pages/user_list_page.dart';
 import 'package:book_app/features/categories/presentation/pages/category_list_page.dart';
+=======
+import 'package:book_app/features/categories/presentation/pages/category_list_page.dart';
+// import 'package:book_app/features/users/presentation/pages/user_list_page.dart';
+>>>>>>> Stashed changes
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -30,8 +35,13 @@ class MyApp extends ConsumerWidget {
       //     child: Text('Welcome to Book App'),
       //   ),
       // ),
+<<<<<<< Updated upstream
       home: const UsersScreen(),
       //home: const CategoriesScreen(),
+=======
+      // home: const UsersScreen(),
+      home: const CategoriesScreen(),
+>>>>>>> Stashed changes
     );
   }
 }

@@ -10,4 +10,8 @@ class Category {
     required this.description,
     this.createdAt,
   });
+<<<<<<< Updated upstream
 }
+=======
+}
+>>>>>>> Stashed changes

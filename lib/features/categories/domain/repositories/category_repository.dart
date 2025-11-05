@@ -5,4 +5,8 @@ abstract class CategoryRepository {
   Future<Category> createCategory(Category category);
   Future<Category> updateCategory(Category category);
   Future<void> deleteCategory(String id);
+<<<<<<< Updated upstream
 }
+=======
+}
+>>>>>>> Stashed changes

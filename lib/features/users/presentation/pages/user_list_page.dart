@@ -1,5 +1,8 @@
+import 'package:book_app/core/routing/app_routes.dart';
+import 'package:book_app/widgets/bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../domain/entities/user.dart';
 import '../../../../core/providers.dart';
 
@@ -20,6 +23,10 @@ class UsersScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.brown),
+          onPressed: () => Navigator.of(context).pop(), // Quay lại trang trước
+        ),
         title: const Text(
           'Quản lý người dùng',
           style: TextStyle(
@@ -175,68 +182,10 @@ class UsersScreen extends ConsumerWidget {
           );
         },
       ),
+      bottomNavigationBar: const CommonBottomNav(currentIndex: 4),
+
     );
   }
-
-  // void _showDetailDialog(BuildContext context, UserEntity u) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (ctx) => AlertDialog(
-  //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-  //       backgroundColor: const Color(0xFFFFFEFC),
-  //       title: Text(
-  //         u.name,
-  //         style: const TextStyle(color: Colors.brown, fontWeight: FontWeight.bold),
-  //       ),
-  //       content: Column(
-  //         mainAxisSize: MainAxisSize.min,
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           _buildInfo('Email', u.email),
-  //           _buildInfo('Số điện thoại', u.phoneNumber ?? 'Chưa có'),
-  //           _buildInfo('Địa chỉ', u.address ?? 'Chưa có'),
-  //           _buildInfo('Giới tính', u.gender ?? 'Chưa có'),
-  //           _buildInfo(
-  //             'Ngày sinh',
-  //             u.birthDate != null
-  //                 ? '${u.birthDate!.day}/${u.birthDate!.month}/${u.birthDate!.year}'
-  //                 : 'Chưa có',
-  //           ),
-  //           _buildInfo(
-  //             'Ngày tạo',
-  //             u.createdAt != null
-  //                 ? '${u.createdAt!.day}/${u.createdAt!.month}/${u.createdAt!.year}'
-  //                 : 'Không có',
-  //           ),
-  //         ],
-  //       ),
-  //       actions: [
-  //         TextButton(
-  //           onPressed: () => Navigator.of(ctx).pop(),
-  //           child: const Text('Đóng', style: TextStyle(color: Colors.brown)),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  // Widget _buildInfo(String label, String value) {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(vertical: 4),
-  //     child: RichText(
-  //       text: TextSpan(
-  //         text: '$label: ',
-  //         style: const TextStyle(color: Colors.brown, fontWeight: FontWeight.bold),
-  //         children: [
-  //           TextSpan(
-  //             text: value,
-  //             style: const TextStyle(color: Colors.black87),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
     void _showDetailDialog(BuildContext context, UserEntity u) {
     showDialog(
       context: context,

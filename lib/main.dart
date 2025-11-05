@@ -1,9 +1,17 @@
+<<<<<<< Updated upstream
 import 'package:book_app/app.dart';
+=======
+import 'package:book_app/core/routing/app_go_router.dart';
+>>>>>>> Stashed changes
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/config/config_env.dart';
+<<<<<<< Updated upstream
+=======
+// nếu bạn có file này (tự tạo từ Firebase)
+>>>>>>> Stashed changes
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

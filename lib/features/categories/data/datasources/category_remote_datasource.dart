@@ -79,4 +79,8 @@ class CategoryRemoteDataSource {
   Future<void> deleteCategory(String id) async {
     await firestore.collection('categories').doc(id).delete();
   }
+<<<<<<< Updated upstream
 }
+=======
+}
+>>>>>>> Stashed changes
