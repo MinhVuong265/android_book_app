@@ -1,4 +1,8 @@
 import 'package:book_app/features/books/presentation/pages/add_edit_book_page.dart';
+import 'package:book_app/features/categories/presentation/pages/category_list_page.dart';
+import 'package:book_app/features/home/presentation/pages/home_page.dart';
+import 'package:book_app/features/users/presentation/pages/user_list_page.dart';
+import 'package:flutter/material.dart';
 import 'package:book_app/features/home/presentation/pages/home_page.dart';
 // import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -49,6 +53,16 @@ class AppGoRouter {
           return BookReaderPage(book: book);
         },
       ),
+      GoRoute(path: AppRoutes.addEditBook, builder: (context, state) {
+        final book = state.extra as BookEntity?;
+        return AddEditBookPage(book: book);
+      }),
+      GoRoute(path: AppRoutes.users, builder: (context, state) {
+        return const UsersScreen();
+      }),
+      GoRoute(path: AppRoutes.categories, builder: (context, state) {
+        return const CategoriesScreen();
+      }),
       GoRoute(
         path: AppRoutes.addEditBook,
         builder: (context, state) {
