@@ -14,8 +14,12 @@ class CommonBottomNav extends StatelessWidget {
       unselectedItemColor: Colors.grey,
       type: BottomNavigationBarType.fixed,
       onTap: (index) {
+        if (index == 0) context.push(AppRoutes.collection);
+        if (index == 1) context.push(AppRoutes.home);
+        if (index == 2) context.push(AppRoutes.profile);
         if (index == 3) context.push(AppRoutes.categories);
         if (index == 4) context.push(AppRoutes.users);
+        if (index == 5) context.push(AppRoutes.accounts);
       },
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.book), label: 'My Collection'),
@@ -23,6 +27,8 @@ class CommonBottomNav extends StatelessWidget {
         BottomNavigationBarItem(icon: Icon(Icons.person), label: 'My Profile'),
         BottomNavigationBarItem(icon: Icon(Icons.receipt_long), label: 'Danh mục'),
         BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Người dùng'),
+        BottomNavigationBarItem(icon: Icon(Icons.admin_panel_settings), label: 'Tài khoản'),
+
       ],
     );
   }

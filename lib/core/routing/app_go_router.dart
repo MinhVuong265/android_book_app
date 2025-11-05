@@ -1,3 +1,4 @@
+import 'package:book_app/features/account_management/presentation/pages/account_management_page.dart';
 import 'package:book_app/features/books/presentation/pages/add_edit_book_page.dart';
 import 'package:book_app/features/categories/presentation/pages/category_list_page.dart';
 import 'package:book_app/features/home/presentation/pages/home_page.dart';
@@ -62,6 +63,9 @@ class AppGoRouter {
       }),
       GoRoute(path: AppRoutes.categories, builder: (context, state) {
         return const CategoriesScreen();
+      }),
+      GoRoute(path: AppRoutes.accounts, builder: (context, state) {
+        return const AccountManagementPage();
       }),
       GoRoute(
         path: AppRoutes.addEditBook,

@@ -1,5 +1,6 @@
 import 'package:book_app/core/routing/app_go_router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart'; // 👈 thêm dòng này
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart'; // nếu bạn có file này (tự tạo từ Firebase)
@@ -7,7 +8,13 @@ import 'firebase_options.dart'; // nếu bạn có file này (tự tạo từ Fi
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MyApp());
+
+  // 👇 Bọc ứng dụng trong ProviderScope
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -24,8 +31,8 @@ class MyApp extends StatelessWidget {
           );
         }
 
-        // ✅ DÙ đăng nhập hay chưa, ta chỉ dùng MỘT MaterialApp.router duy nhất
         return MaterialApp.router(
+          debugShowCheckedModeBanner: false,
           title: 'Book App',
           routerConfig: AppGoRouter.router,
           theme: ThemeData(
@@ -37,3 +44,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+

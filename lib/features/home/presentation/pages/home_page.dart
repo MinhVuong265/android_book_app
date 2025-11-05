@@ -1,5 +1,6 @@
 import 'package:book_app/core/routing/app_routes.dart';
 import 'package:book_app/features/books/presentation/pages/book_detail_sheet.dart';
+import 'package:book_app/widgets/bottom_nav.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -220,25 +221,28 @@ class _HomePageState extends State<HomePage> {
         },
         child: const Icon(Icons.add, color: Colors.white),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 1,
-        onTap: (index) {
-          if (index == 0) context.go('/collection');
-          if (index == 1) context.go('/explore');
-          if (index == 2) context.go('/profile');
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'My Collection',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.add_box), label: 'Explore'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'My Profile',
-          ),
-        ],
-      ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   currentIndex: 1,
+      //   onTap: (index) {
+      //     if (index == 0) context.go('/collection');
+      //     if (index == 1) context.go('/explore');
+      //     if (index == 2) context.go('/profile');
+      //     if (index == 3) context.go('/categories');
+      //     if (index == 4) context.go('/users');
+      //   },
+      //   items: const [
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.book),
+      //       label: 'My Collection',
+      //     ),
+      //     BottomNavigationBarItem(icon: Icon(Icons.add_box), label: 'Explore'),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.person),
+      //       label: 'My Profile',
+      //     ),
+      //   ],
+      // ),
+      bottomNavigationBar: const CommonBottomNav(currentIndex: 1),
     );
   }
 }
