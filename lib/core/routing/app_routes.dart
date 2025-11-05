@@ -9,6 +9,8 @@ class AppRoutes {
   static const library = '/library';
   static const libraryFavorites = '/library/favorites';
   static const libraryHistory = '/library/history';
+  static const categories = '/categories';
+  static const users = '/users';
   // Collection
   static const collection = '/collection';
 }
