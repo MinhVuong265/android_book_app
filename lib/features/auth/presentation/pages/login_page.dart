@@ -23,12 +23,14 @@ class _LoginPageState extends State<LoginPage> {
         password: _passwordController.text,
       );
     } on FirebaseAuthException catch (e) {
-       ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("Đăng nhập thất bại! Vui lòng kiểm tra lại email và mật khẩu.\n${e.message}"),
-        backgroundColor: Colors.redAccent,
-      ),
-    );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "Đăng nhập thất bại! Vui lòng kiểm tra lại email và mật khẩu.\n${e.message}",
+          ),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
     }
   }
 
@@ -51,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ],
           ),
-          
+
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -81,13 +83,19 @@ class _LoginPageState extends State<LoginPage> {
                 decoration: InputDecoration(
                   hintText: "Nhập email",
                   hintStyle: TextStyle(color: Colors.grey.withOpacity(0.7)),
-                  prefixIcon: const Icon(Icons.email_outlined, color: Colors.pinkAccent),
+                  prefixIcon: const Icon(
+                    Icons.email_outlined,
+                    color: Colors.pinkAccent,
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   filled: true,
                   fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 14,
+                    horizontal: 12,
+                  ),
                 ),
               ),
 
@@ -111,10 +119,15 @@ class _LoginPageState extends State<LoginPage> {
                 decoration: InputDecoration(
                   hintText: "Nhập mật khẩu",
                   hintStyle: TextStyle(color: Colors.grey.withOpacity(0.7)),
-                  prefixIcon: const Icon(Icons.lock_outline, color: Colors.pinkAccent),
+                  prefixIcon: const Icon(
+                    Icons.lock_outline,
+                    color: Colors.pinkAccent,
+                  ),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                      _obscurePassword
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
                       color: Colors.pinkAccent,
                     ),
                     onPressed: () {
@@ -128,7 +141,10 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   filled: true,
                   fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 14,
+                    horizontal: 12,
+                  ),
                 ),
               ),
 
@@ -165,8 +181,7 @@ class _LoginPageState extends State<LoginPage> {
                   const Text("Chưa có tài khoản? "),
                   MouseRegion(
                     cursor: SystemMouseCursors.click,
-                    child:
-                      GestureDetector(
+                    child: GestureDetector(
                       onTap: () {
                         context.go(AppRoutes.signup);
                       },
@@ -178,7 +193,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ],

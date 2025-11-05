@@ -42,7 +42,7 @@ class BookDetailSheet extends StatelessWidget {
                     // child: image.startsWith('http')
                     //     // ? Image.network(image, height: 200)
                     //     : Image.asset(image, height: 200),
-                    child: Image.asset('images/image1.jpg', height: 200)
+                    child: Image.asset('images/image1.jpg', height: 200),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -84,7 +84,9 @@ class BookDetailSheet extends StatelessWidget {
                         backgroundColor: Colors.brown,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 12),
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
                       ),
                       onPressed: () {
                         Navigator.pop(context);
@@ -112,7 +114,9 @@ class BookDetailSheet extends StatelessWidget {
                           backgroundColor: Colors.orangeAccent,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 12),
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
                         ),
                         onPressed: () {
                           Navigator.pop(context);
@@ -137,22 +141,30 @@ class BookDetailSheet extends StatelessWidget {
                           backgroundColor: Colors.redAccent,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 12),
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
                         ),
                         onPressed: () async {
                           final confirm = await showDialog<bool>(
                             context: context,
                             builder: (context) => AlertDialog(
                               title: const Text('Xác nhận xoá'),
-                              content: Text('Bạn có chắc muốn xoá "$title" không?'),
+                              content: Text(
+                                'Bạn có chắc muốn xoá "$title" không?',
+                              ),
                               actions: [
                                 TextButton(
-                                  onPressed: () => Navigator.pop(context, false),
+                                  onPressed: () =>
+                                      Navigator.pop(context, false),
                                   child: const Text('Huỷ'),
                                 ),
                                 TextButton(
                                   onPressed: () => Navigator.pop(context, true),
-                                  child: const Text('Xoá', style: TextStyle(color: Colors.red)),
+                                  child: const Text(
+                                    'Xoá',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
                                 ),
                               ],
                             ),
@@ -166,7 +178,10 @@ class BookDetailSheet extends StatelessWidget {
 
                             Navigator.pop(context);
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Đã xoá sách "$title"'), backgroundColor: Colors.green,),
+                              SnackBar(
+                                content: Text('Đã xoá sách "$title"'),
+                                backgroundColor: Colors.green,
+                              ),
                             );
                           }
                         },

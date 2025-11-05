@@ -1,5 +1,4 @@
 import 'package:book_app/core/routing/app_routes.dart';
-import 'package:book_app/features/books/domain/entities/book_entity.dart';
 import 'package:book_app/features/books/presentation/pages/book_detail_sheet.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -33,10 +32,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text(
           'Explore',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.brown,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.brown),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
@@ -68,10 +64,9 @@ class _HomePageState extends State<HomePage> {
                 DropdownButton<String>(
                   value: _selectedCategory,
                   items: _categories
-                      .map((cat) => DropdownMenuItem(
-                            value: cat,
-                            child: Text(cat),
-                          ))
+                      .map(
+                        (cat) => DropdownMenuItem(value: cat, child: Text(cat)),
+                      )
                       .toList(),
                   onChanged: (value) {
                     setState(() {
@@ -102,14 +97,19 @@ class _HomePageState extends State<HomePage> {
                 final filteredBooks = books.where((doc) {
                   final data = doc.data() as Map<String, dynamic>;
                   final title = (data["title"] ?? "").toString().toLowerCase();
-                  final author = (data["author"] ?? "").toString().toLowerCase();
-                  final category =
-                      (data["category"] ?? "Khác").toString().toLowerCase();
+                  final author = (data["author"] ?? "")
+                      .toString()
+                      .toLowerCase();
+                  final category = (data["category"] ?? "Khác")
+                      .toString()
+                      .toLowerCase();
 
                   final query = _searchController.text.toLowerCase();
-                  final matchQuery = title.contains(query) || author.contains(query);
+                  final matchQuery =
+                      title.contains(query) || author.contains(query);
 
-                  final matchCategory = _selectedCategory == "Tất cả" ||
+                  final matchCategory =
+                      _selectedCategory == "Tất cả" ||
                       category == _selectedCategory.toLowerCase();
 
                   return matchQuery && matchCategory;
@@ -127,17 +127,19 @@ class _HomePageState extends State<HomePage> {
                     itemCount: filteredBooks.length,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.63,
-                      mainAxisSpacing: 16,
-                      crossAxisSpacing: 16,
-                    ),
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.63,
+                          mainAxisSpacing: 16,
+                          crossAxisSpacing: 16,
+                        ),
                     itemBuilder: (context, index) {
-                      final data = filteredBooks[index].data() as Map<String, dynamic>;
+                      final data =
+                          filteredBooks[index].data() as Map<String, dynamic>;
                       final title = data["title"] ?? "No title";
                       final author = data["author"] ?? "Unknown";
                       final rating = data["rating"] ?? 0.0;
-                      final image = data["coverImageUrl"] ?? "images/image1.jpg";
+                      final image =
+                          data["coverImageUrl"] ?? "images/image1.jpg";
 
                       return GestureDetector(
                         onTap: () {
@@ -145,13 +147,15 @@ class _HomePageState extends State<HomePage> {
                             context: context,
                             isScrollControlled: true,
                             shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.vertical(top: Radius.circular(20)),
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(20),
+                              ),
                             ),
                             builder: (context) {
                               return BookDetailSheet(
                                 bookData: data,
-                                isAdmin: true, // Thay bằng biến phân quyền nếu có
+                                isAdmin:
+                                    true, // Thay bằng biến phân quyền nếu có
                               );
                             },
                           );
@@ -169,18 +173,20 @@ class _HomePageState extends State<HomePage> {
                                   //     fit: BoxFit.cover,
                                   //   )
                                   Image.asset(
-                                      'images/image1.jpg',
-                                      height: 300,
-                                      width: 200,
-                                      fit: BoxFit.cover,
-                                    ),
+                                    'images/image1.jpg',
+                                    height: 300,
+                                    width: 200,
+                                    fit: BoxFit.cover,
+                                  ),
                             ),
                             const SizedBox(height: 8),
                             Text(
                               title,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             Text(
                               author,
@@ -189,8 +195,11 @@ class _HomePageState extends State<HomePage> {
                             Row(
                               children: [
                                 Text("$rating"),
-                                const Icon(Icons.star,
-                                    color: Colors.amber, size: 16),
+                                const Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                  size: 16,
+                                ),
                               ],
                             ),
                           ],
@@ -223,10 +232,7 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.book),
             label: 'My Collection',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_box),
-            label: 'Explore',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.add_box), label: 'Explore'),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'My Profile',
