@@ -1,6 +1,8 @@
 import 'package:book_app/core/routing/app_routes.dart';
 import 'package:book_app/features/books/domain/entities/book_entity.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:book_app/features/books/domain/usecases/delete_book.dart';
+import 'package:book_app/features/books/data/repositories/book_repository_impl.dart';
+import 'package:book_app/features/books/data/datasources/firebase_book_datasource.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -23,6 +25,9 @@ class BookDetailSheet extends StatelessWidget {
     final content = bookData['content'] ?? 'Chưa có nội dung';
     final category = bookData['category'] ?? 'Chưa phân loại';
 
+    final repo = BookRepositoryImpl(FirebaseBookDatasource());
+    final deleteBook = DeleteBook(repo); // ✅ Use case xoá
+
     return DraggableScrollableSheet(
       expand: false,
       initialChildSize: 0.6,
@@ -36,7 +41,6 @@ class BookDetailSheet extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Ảnh bìa
                 Center(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15),
@@ -45,7 +49,6 @@ class BookDetailSheet extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
 
-                // Tiêu đề
                 Text(
                   title,
                   style: const TextStyle(
@@ -56,22 +59,14 @@ class BookDetailSheet extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
 
-                // Tác giả
-                Text(
-                  'Tác giả: $author',
-                  style: const TextStyle(color: Colors.grey),
-                ),
-
-                // Thể loại
+                Text('Tác giả: $author',
+                    style: const TextStyle(color: Colors.grey)),
                 const SizedBox(height: 4),
-                Text(
-                  'Thể loại: $category',
-                  style: const TextStyle(color: Colors.grey),
-                ),
+                Text('Thể loại: $category',
+                    style: const TextStyle(color: Colors.grey)),
 
                 const Divider(height: 30),
 
-                // Nội dung mô tả/ngắn
                 Text(
                   content.length > 200
                       ? '${content.substring(0, 200)}...'
@@ -81,7 +76,6 @@ class BookDetailSheet extends StatelessWidget {
 
                 const SizedBox(height: 25),
 
-                // Nút chức năng
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -116,7 +110,7 @@ class BookDetailSheet extends StatelessWidget {
                     ),
 
                     // Nếu là admin thì hiện nút sửa & xoá
-                    if (true) ...[
+                    if (isAdmin) ...[
                       ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.orangeAccent,
@@ -159,9 +153,7 @@ class BookDetailSheet extends StatelessWidget {
                             context: context,
                             builder: (context) => AlertDialog(
                               title: const Text('Xác nhận xoá'),
-                              content: Text(
-                                'Bạn có chắc muốn xoá "$title" không?',
-                              ),
+                              content: Text('Bạn có chắc muốn xoá "$title"?'),
                               actions: [
                                 TextButton(
                                   onPressed: () =>
@@ -170,28 +162,24 @@ class BookDetailSheet extends StatelessWidget {
                                 ),
                                 TextButton(
                                   onPressed: () => Navigator.pop(context, true),
-                                  child: const Text(
-                                    'Xoá',
-                                    style: TextStyle(color: Colors.red),
-                                  ),
+                                  child: const Text('Xoá',
+                                      style: TextStyle(color: Colors.red)),
                                 ),
                               ],
                             ),
                           );
 
                           if (confirm == true) {
-                            await FirebaseFirestore.instance
-                                .collection('books')
-                                .doc(id)
-                                .delete();
-
-                            Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Đã xoá sách "$title"'),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
+                            await deleteBook(id); // ✅ Gọi use case DeleteBook
+                            if (context.mounted) {
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Đã xoá sách "$title"'),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                            }
                           }
                         },
                         icon: const Icon(Icons.delete),

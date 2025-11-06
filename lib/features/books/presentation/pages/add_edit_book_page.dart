@@ -1,9 +1,12 @@
 import 'package:book_app/features/books/presentation/pages/book_detail_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../../data/repositories/book_repository_impl.dart';
 import '../../data/datasources/firebase_book_datasource.dart';
 import '../../domain/entities/book_entity.dart';
+import '../../domain/usecases/create_book.dart';
+import '../../domain/usecases/update_book.dart'; // ✅ thêm usecase update
 
 class AddEditBookPage extends StatefulWidget {
   final BookEntity? book; // nếu null -> thêm, nếu có -> sửa
@@ -23,7 +26,7 @@ class _AddEditBookPageState extends State<AddEditBookPage> {
   final _repo = BookRepositoryImpl(FirebaseBookDatasource());
   final _categoriesRef = FirebaseFirestore.instance.collection('categories');
 
-  String? _selectedCategory; // Lưu danh mục được chọn
+  String? _selectedCategory;
 
   @override
   void initState() {
@@ -32,7 +35,7 @@ class _AddEditBookPageState extends State<AddEditBookPage> {
       _titleController.text = widget.book!.title;
       _authorController.text = widget.book!.author;
       _contentController.text = widget.book!.content;
-      _imageController.text = 'images/image1.jpg';
+      _imageController.text = widget.book!.coverImageUrl;
       _descriptionController.text = widget.book!.description ?? '';
       _selectedCategory = widget.book!.category;
     }
@@ -45,7 +48,6 @@ class _AddEditBookPageState extends State<AddEditBookPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Vui lòng nhập đầy đủ thông tin")),
       );
-    
       return;
     }
 
@@ -55,35 +57,50 @@ class _AddEditBookPageState extends State<AddEditBookPage> {
       author: _authorController.text.trim(),
       description: _descriptionController.text.trim(),
       content: _contentController.text.trim(),
-      coverImageUrl: _imageController.text.trim(),
+      coverImageUrl: _imageController.text.trim().isEmpty
+          ? 'images/image1.jpg'
+          : _imageController.text.trim(),
       category: _selectedCategory!,
       createdAt: widget.book?.createdAt ?? DateTime.now(),
       updatedAt: DateTime.now(),
     );
 
-    if (widget.book == null) {
-      await _repo.addBook(newBook);
-    } else {
-      await _repo.updateBook(newBook);
-    }
+    try {
+      if (widget.book == null) {
+        
+        final createBook = CreateBook(_repo);
+        await createBook(newBook);
+      } else {
+        
+        final updateBook = UpdateBook(_repo);
+        await updateBook(newBook);
+      }
 
-    if (mounted) {
-      Navigator.pop(context, true); // trở lại home sau khi lưu
+      if (!mounted) return;
+
+      // 🔁 Sau khi lưu → hiển thị chi tiết sách
+      Navigator.pop(context, true);
       showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (ctx) => BookDetailSheet(
-        bookData: {
-          'id': newBook.id,
-          'title': newBook.title,
-          'author': newBook.author,
-          'content': newBook.content,
-          'coverImageUrl': newBook.coverImageUrl,
-          'category': newBook.category,
-        },
-        isAdmin: true,
-        )
+        context: context,
+        isScrollControlled: true,
+        builder: (ctx) => BookDetailSheet(
+          bookData: {
+            'id': newBook.id,
+            'title': newBook.title,
+            'author': newBook.author,
+            'content': newBook.content,
+            'coverImageUrl': newBook.coverImageUrl,
+            'category': newBook.category,
+          },
+          isAdmin: true,
+        ),
       );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Lỗi khi lưu sách: $e")),
+        );
+      }
     }
   }
 
@@ -121,10 +138,6 @@ class _AddEditBookPageState extends State<AddEditBookPage> {
               minLines: 5,
               maxLines: 10,
             ),
-            // TextField(
-            //   controller: _imageController,
-            //   decoration: const InputDecoration(labelText: 'Link ảnh bìa (URL)'),
-            // ),
             const SizedBox(height: 16),
 
             // 🔽 Dropdown danh mục
@@ -140,7 +153,8 @@ class _AddEditBookPageState extends State<AddEditBookPage> {
                 }
 
                 final docs = snapshot.data?.docs ?? [];
-                final categories = docs.map((d) => d['name'].toString()).toList();
+                final categories =
+                    docs.map((d) => d['name'].toString()).toList();
 
                 if (categories.isEmpty) {
                   return const Text("Chưa có danh mục nào trong Firestore");
